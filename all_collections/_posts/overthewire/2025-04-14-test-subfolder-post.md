@@ -2,7 +2,7 @@
 layout: post
 title: "Test Post in Subfolder"
 date: 2025-04-14
-categories: [OverTheWire, test]
+categories: OverTheWire
 ---
 
 # Test Post in Subfolder
