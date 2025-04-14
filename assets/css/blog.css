@@ -214,3 +214,91 @@ main {
     font-size: 1rem;
   }
 }
+
+/* Search styles */
+.search-container {
+  margin: 0 0 2rem 0;
+  width: 100%;
+}
+
+#search-input {
+  width: 100%;
+  padding: 1rem;
+  margin: 0;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 15px;
+  font-size: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 100;
+  font-style: italic;
+  background-color: var(--gray-3);
+  color: var(--white-2);
+  transition: all 0.2s ease-in-out;
+}
+
+#search-input::placeholder {
+  color: var(--white-2);
+  opacity: 0.5;
+}
+
+#search-input:focus {
+  outline: none;
+  transform: scale(1.05);
+}
+
+#search-results {
+  margin-top: 1rem;
+  background: transparent;
+}
+
+.search-result {
+  padding: 1rem;
+  background: var(--gray-3);
+  border-radius: 15px;
+  margin-bottom: 0.5rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.search-result:hover {
+  transform: scale(1.05);
+}
+
+.search-result:last-child {
+  margin-bottom: 0;
+}
+
+.search-result h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 100;
+  font-style: italic;
+}
+
+.search-result h3 a {
+  color: var(--white-2);
+  text-decoration: none;
+}
+
+.search-result h3 a:hover {
+  color: var(--white-1);
+}
+
+.search-result small {
+  display: block;
+  color: var(--white-2);
+  font-size: 0.8rem;
+  font-family: 'JetBrains Mono', monospace;
+  margin-top: 0.5rem;
+}
+
+.no-results {
+  padding: 1rem;
+  color: var(--white-2);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1rem;
+  font-weight: 100;
+  font-style: italic;
+  opacity: 0.5;
+}

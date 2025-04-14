@@ -4,6 +4,17 @@
   <body>
     <main>
       {% include header.html %} {% include bio.html %}
+      
+      <div class="search-container">
+        <input 
+          type="text" 
+          id="search-input" 
+          placeholder="Search..." 
+          aria-label="Search posts"
+        />
+        <div id="search-results" style="display: none;"></div>
+      </div>
+
       <section class="articles">
         {% for post in site.posts %}
         <article class="article">
@@ -24,5 +35,6 @@
       {% include footer.html %}
     </main>
     {% include category-modal.html %}
+    <script src="{{ site.baseurl }}/assets/js/search.js"></script>
   </body>
 </html>
