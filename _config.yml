@@ -27,20 +27,28 @@ collections:
 
 defaults:
   - scope:
-      path: "_posts"
+      path: ""
+      type: "posts"
     values:
       layout: "post"
       permalink: /posts/:title/
   - scope:
-      path: "overthewire_bandit"
+      path: ""
+      type: "overthewire_bandit"
     values:
       layout: "post"
+      permalink: /overthewire/bandit/:title/
   - scope:
-      path: "overthewire_natas"
+      path: ""
+      type: "overthewire_natas"
     values:
       layout: "post"
+      permalink: /overthewire/natas/:title/
   - scope:
-      path: "overthewire_leviathan"
+      path: ""
+      type: "overthewire_leviathan"
     values:
       layout: "post"
+      permalink: /overthewire/leviathan/:title/
+
 exclude: ["sitemap.xml", "feed.xml", "LICENSE", "README.md"]

@@ -2,6 +2,7 @@
 layout: post
 title: Natas Solutions
 date: 2025-04-10
+categories: [OverTheWire, natas]
 ---
 ## natas0
 
