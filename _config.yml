@@ -15,39 +15,12 @@ collections_dir: all_collections
 collections:
   posts:
     output: true
-  overthewire_bandit:
-    output: true
-    permalink: /overthewire/bandit/:title/
-  overthewire_natas:
-    output: true
-    permalink: /overthewire/natas/:title/
-  overthewire_leviathan:
-    output: true
-    permalink: /overthewire/leviathan/:title/
 
 defaults:
   - scope:
       path: ""
-      type: posts
+      type: "posts"
     values:
-      layout: post
-  - scope:
-      path: ""
-      type: overthewire_bandit
-    values:
-      layout: post
-      type: posts
-  - scope:
-      path: ""
-      type: overthewire_natas
-    values:
-      layout: post
-      type: posts
-  - scope:
-      path: ""
-      type: overthewire_leviathan
-    values:
-      layout: post
-      type: posts
+      layout: "post"
 
 exclude: ["sitemap.xml", "feed.xml", "LICENSE", "README.md"]
