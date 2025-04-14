@@ -3,7 +3,7 @@ description: Cybersecurity. CTFs. Japan.
 author: P4wnda
 theme: null
 markdown: kramdown
-permalink: pretty
+permalink: /:title/
 
 plugins:
   - jemoji
