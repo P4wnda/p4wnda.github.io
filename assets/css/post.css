@@ -171,24 +171,24 @@ main {
 }
 .content img {
   max-width: 100%;
-  margin: 1rem 0;
+  margin: 0.5rem 0;
+  border-radius: 5px;
 }
 .content img.emoji {
   margin: 0 !important;
 }
 
 /* pre , code */
-.content,
-.content div,
-.content div pre,
-.content div pre code {
-  overflow-x: auto !important;
+.content {
+  overflow-x: hidden;
 }
 
 .content pre {
   background: var(--gray-3);
   padding: 1rem 2rem;
   margin-bottom: 1.75rem;
+  overflow-x: auto;
+  border-radius: 5px;
 }
 
 .content code {
@@ -196,6 +196,11 @@ main {
   color: var(--white-2);
   white-space: pre;
   background: var(--gray-3);
+}
+
+.content pre code {
+  padding: 0;
+  background: none;
 }
 
 @media (prefers-color-scheme: light) {
