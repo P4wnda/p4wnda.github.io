@@ -108,3 +108,72 @@ Natas teaches the basics of serverside web-security. Each level contains its own
    ![Access Granted](/assets/img/overthewire/natas6_10/natas8_2.png)
 
 **Password for Level 9**: [REDACTED]
+
+---
+
+### Level 9 --> Level 10
+**URL**: http://natas9.natas.labs.overthewire.org  
+**Username**: natas9  
+**Password**: [REDACTED]
+
+#### Solution
+1. Visit the URL and log in with the provided credentials. You will see an input field with a search button.
+   ![Input Field With Search](/assets/img/overthewire/natas6_10/natas9_1.png)
+2. Inspect the source code to understand how the input is processed:
+   ```php
+   <?
+   $key = "";
+
+   if(array_key_exists("needle", $_REQUEST)) {
+       $key = $_REQUEST["needle"];
+   }
+
+   if($key != "") {
+       passthru("grep -i $key dictionary.txt");
+   }
+   ?>
+   ```
+3. The code uses the `passthru` function to execute a `grep` command on `dictionary.txt` with the user-provided `needle` parameter. However, the input is not sanitized, leading to a command injection vulnerability.
+4. Test the input field by entering a simple parameter to observe the behavior.
+   ![Testing](/assets/img/overthewire/natas6_10/natas9_2.png)
+5. Exploit the vulnerability by crafting a malicious input. Use a semicolon `;` to terminate the current command and inject a new command: `needle=test;cat%20/etc/natas_webpass/natas10`. This retrieves the password for the next level.
+   ![Malicious Request](/assets/img/overthewire/natas6_10/natas9_3.png)
+
+**Password for Level 10**: [REDACTED]
+
+---
+
+
+### Level 10 --> Level 11
+**URL**: http://natas10.natas.labs.overthewire.org  
+**Username**: natas10  
+**Password**: [REDACTED]
+
+#### Solution
+1. Visit the URL and log in with the provided credentials. You will see a search field similar to the previous level.
+2. Inspect the source code to understand the input processing:
+   ```php
+   <?
+   $key = "";
+
+   if(array_key_exists("needle", $_REQUEST)) {
+       $key = $_REQUEST["needle"];
+   }
+
+   if($key != "") {
+       if(preg_match('/[;|&]/', $key)) {
+           print "Input contains an illegal character!";
+       } else {
+           passthru("grep -i $key dictionary.txt");
+       }
+   }
+   ?>
+   ```
+3. The code uses the `passthru` function to execute a `grep` command on `dictionary.txt` with the user-provided `needle` parameter. However, characters such as `;`, `|`, and `&` are forbidden to prevent command injection.
+4. Exploit the vulnerability by using a regex pattern. The payload `needle=.%20/etc/natas_webpass/natas11&submit=Search` is crafted to bypass the restrictions.
+   ![Pwned](/assets/img/overthewire/natas6_10/natas10_1.png)
+5. The `.` in regex matches any character, allowing `grep -i .` to output all lines containing at least one character, effectively printing the entire content of `/etc/natas_webpass/natas11`.
+
+**Password for Level 11**: [REDACTED]
+
+---
