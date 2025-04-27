@@ -2,7 +2,7 @@
 layout: post
 title: OverTheWire - Natas Solutions 6 - 10
 date: 2025-04-25
-categories: [OverTheWire, natas, Web, Decoding]
+categories: [OverTheWire, natas, Web, Decoding, Command Injection]
 ---
 # Natas Solutions
 
