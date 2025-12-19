@@ -69,7 +69,7 @@ The login was successful.
 > Switching from FTP to SSH provided a more stable and interactive shell for further enumeration.
 
 ## Privilege Escalation
-I uploaded and executed [linpeas.sh](github.com/peass-ng/PEASS-ng/tree/master/linPEAS) to identify privilege escalation vectors.
+I uploaded and executed [linpeas.sh](https://github.com/peass-ng/PEASS-ng/tree/master/linPEAS) to identify privilege escalation vectors.
 One finding stood out:
 * `python3` binary had the SUID bit set.
 
