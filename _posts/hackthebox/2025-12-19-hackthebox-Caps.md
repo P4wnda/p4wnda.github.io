@@ -47,7 +47,7 @@ this revealed mostly the same results as the manual exploration.
 ![Fuzzing Results](/assets/img/hackthebox/caps/fuzz_result.png)
 
 ## PCAP File Analysis
-Accessing the `/data/x` Endpoint was the most interesting as you were able to download a PCAP File there. I first downloaded the `/data/15` which showed nothing interesting. I then tried to access other PCAP Downloads via IDOR. This worked.
+Accessing the `/data/x` Endpoint was the most interesting as you were able to download a PCAP File there. I first downloaded the `/data/15` which showed my traffic to the Machine. This was being recorded via the `/capture` Endpoint. I then tried to access other PCAP Downloads via IDOR. This worked.
 
 For this I then tested the lowest Index `0` and analyzed its PCAP File with Wireshark.
 While inspecting the network traffic, I discovered cleartext FTP credentials:
@@ -82,9 +82,12 @@ python3 -c 'import os; os.setuid(0); os.system("/bin/bash")'
 ```
 This will result in a root shell.
 
+While reviewing the machine I found that there is actually another hint. Inside `/var/www/html/app.py` there is actually an obvious hint ;). When we tried to run the `/capture` Endpoint to Capture the current Traffic it actually has to run `tcpdump` as root. With this I wouldn't have needed to run linpeas.sh.
+![Hint](/assets/img/hackthebox/caps/hint.png)
+
 ## Root Flag
 After escalating privileges, I was able to access the root directory and retrieve the final flag:
-![Python Binary](/assets/img/hackthebox/caps/root.png)
+![root](/assets/img/hackthebox/caps/root.png)
 (Yes I wrote car by accident...)
 
 ## Attack Chain / Summary
