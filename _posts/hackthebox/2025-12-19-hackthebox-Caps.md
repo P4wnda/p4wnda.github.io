@@ -4,7 +4,7 @@ title: "HackTheBox - Caps"
 date: 2025-12-19 12:00:00 +0200
 categories: [CTF, HackTheBox, Linux, Web, Privilege Escalation]
 tags: [CTF, writeup, Linux, HTB, Easy]
-description: "Writeup for HackTheBox Maschine 'Caps'"
+description: "Writeup for HackTheBox Machine 'Caps'"
 image:
   path: /assets/img/hackthebox/caps/caps_logo.png
   alt: "HackTheBox Caps Logo"
