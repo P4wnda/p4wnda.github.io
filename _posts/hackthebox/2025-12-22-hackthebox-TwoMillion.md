@@ -65,14 +65,12 @@ I was stuck here for a while and then decided to check out what other endpoints 
 I did this by starting from the known endpoint `api/v1/user/vpn/generate`, I systematically removed path segments and sent requests to each resulting URL, allowing me to enumerate valid API endpoints based on successful responses. This then revealed all the API endpoints with `api/v1`.
 ![All API Endpoints](/assets/img/hackthebox/twoMillion/API-Endpoints.png)
 This was quite interesting as it showed me a few more Endpoints I did not know before. Especially the ones under `/admin/`.
-I tried to access one of these Endpoints (`/api/v1/admin/vpn/generate`) but this gave me a `405 Method not Allowed`.
-![VPN Generate Admin](/assets/img/hackthebox/twoMillion/VPN_Generate_Admin.png)
-I checked other endpoints as well. One interesting endpoint was `api/v1/user/auth`, which returns whether the current user has administrative privileges via the `is_admin` field.
+One interesting endpoint was `api/v1/user/auth`, which returns whether the current user has administrative privileges via the `is_admin` field.
 ![User Auth Check](/assets/img/hackthebox/twoMillion/api_user_auth.png)
 Based on this, I tried registering a new account while adding `"is_admin"` to the POST body. My first attempt included quotation marks, which I later realized were part of the JSON syntax and therefore incorrect.
 ![Register new Account](/assets/img/hackthebox/twoMillion/register_new_account_with_isAdmin.png)
 After correcting this to `is_admin=1`, I registered a new account and checked the result again using `api/v1/user/auth`. The account was still not an administrator, indicating that this approach does not work.
-The next endpoint I tested was `/api/v1/admin/settings/update`. Unlike the other `/admin/` endpoints, this one did not return a `405 Method Not Allowed` response, indicating that it might be accessible. This was something I should have tested earlier.
+The next endpoint I tested was `/api/v1/admin/settings/update`. This one looked promising.
 So I tried to "upgrade" my Account to an Administrator account via this Endpoint. The request reached the endpoint, but the server rejected it because the Content-Type header was missing. The API expects JSON, so it returned `Invalid content type`.
 ![Invalid Content Type](/assets/img/hackthebox/twoMillion/invalid_content_type.png)
 After adding the Header and sending the Request again I got the response that the Parameter "email" was missing. 
@@ -84,7 +82,7 @@ Then after adding that missing parameter we finally got the response we want. We
 After now getting that Admin Account I tried to generate the Admin VPN again via `/api/v1/admin/vpn/generate`. This now returned a valid `openvpn` VPN File.
 ![Admin VPN Generate now works](/assets/img/hackthebox/twoMillion/VPN_Generate_Admin_SUCCESS.png)
 Upon closer inspection I noticed that I could now write whatever username/string I wanted into the `username` field. So does that mean the Input is not validated?
-Turns out yes.
+Turns out yes. Compared to the `/api/v1/user/vpn/generate` the admin version of this does not remove special characters.
 I tested this step by step and it seems that an OS Command Injection is possible via this Syntax `username;id;`.
 ![OS Command Injection](/assets/img/hackthebox/twoMillion/command%20injection.png)
 With this command Injection we now set up our reverse shell. My first Shell via 
