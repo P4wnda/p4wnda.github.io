@@ -3,7 +3,7 @@ layout: post
 title: "m0unt41n - whiteboard"
 date: 2026-04-27 12:00:00 +0200
 categories: [CTF, m0unt41n]
-tags: [CTF, writeup, pwn, integer-overflow, c]
+tags: [CTF, writeup, pwn, integer-overflow, c, stairctf]
 description: "Walkthrough and solution for the m0unt41n challenge 'whiteboard', covering an unsigned integer overflow that allows access to a hidden note."
 image:
   path: assets/img/mntain/mnt_ain_logo.png
