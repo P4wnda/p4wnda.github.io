@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Fake Weather"
+title: "m0unt41n - fake-weather"
 date: 2026-05-06 12:00:00 +0200
 categories: [CTF, Web, misc]
 tags: [CTF, writeup, web, crypto, sha1, hash-collision, flask]
