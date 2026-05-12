@@ -46,7 +46,10 @@ jobs:
           bundler-cache: true
 
       - name: Build site
-        run: bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}"
+        run: |
+          bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}/blog"
+          cp -R landing/. "_site${{ steps.pages.outputs.base_path }}/"
+          cp -R pentest "_site${{ steps.pages.outputs.base_path }}/pentest"
         env:
           JEKYLL_ENV: "production"
 
