@@ -50,6 +50,7 @@ jobs:
           bundle exec jekyll b -d "_site${{ steps.pages.outputs.base_path }}/blog"
           cp -R landing/. "_site${{ steps.pages.outputs.base_path }}/"
           cp -R pentest "_site${{ steps.pages.outputs.base_path }}/pentest"
+          cp -R assets "_site${{ steps.pages.outputs.base_path }}/assets"
         env:
           JEKYLL_ENV: "production"
 
