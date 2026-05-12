@@ -209,6 +209,7 @@ compress_html:
     envs: [development]
 
 exclude:
+  - blog
   - landing
   - pentest
   - "*.gem"
